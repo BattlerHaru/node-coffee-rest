@@ -15,6 +15,12 @@ class Server {
         // directory
         this.usersDir = "../routes/users.routes";
 
+        // Auth
+        // api path
+        this.authPath = "/api/auth";
+        // directory
+        this.authDir = "../routes/auth.routes";
+
         // DB Connect
         this.connectDB();
 
@@ -42,11 +48,12 @@ class Server {
 
     routes() {
         this.app.use(this.usersPath, require(this.usersDir));
+        this.app.use(this.authPath, require(this.authDir));
     }
 
     listen() {
         this.app.listen(this.port, () => {
-            console.log(`listening at http://localhost:${this.port}`);
+            console.log(`listening at http://localhost:${this.port}.`);
         });
     }
 }

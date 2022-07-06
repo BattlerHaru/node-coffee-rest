@@ -14,8 +14,8 @@ const usersGet = async(req = request, res = response) => {
     ]);
 
     res.json({
-        msg: "Lista de usuarios",
-        total: `Total de usuarios: ${total}`,
+        msg: "Lista de usuarios.",
+        total: `Total de usuarios: ${total}.`,
         users,
     });
 };
@@ -61,13 +61,13 @@ const usersDelete = async(req = request, res = response) => {
     const user = await UserModel.findByIdAndUpdate(id, { status: false });
 
     res.json({
-        msg: `Usuario: ${user.name}, dado de baja con éxito`,
+        msg: `Usuario: ${user.name}, dado de baja con éxito.`,
     });
 };
 
 const usersPatch = (req = request, res = response) => {
     res.json({
-        msg: "example patch API - users controller patch",
+        msg: "example patch API - users controller patch.",
     });
 };
 

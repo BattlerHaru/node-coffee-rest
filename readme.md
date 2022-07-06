@@ -6,7 +6,7 @@ npm install
 
 ## Variables de entorno.
 
-El proyecto hace uso de un puerto y el servicio de MongoDB, para funcionar, por lo que es necesario **crear un archivo en la raíz del proyecto** llamado **".env"**, dentro de ese archivo, se añadirán las debidas variables de entorno, las cuales se encuentran en el archivo **"example.env"**, estas **deben ser reemplazadas** para el funcionamiento del proyecto.
+El proyecto hace uso de un puerto, el servicio de MongoDB y JWT, para funcionar, por lo que es necesario **crear un archivo en la raíz del proyecto** llamado **".env"**, dentro de ese archivo, se añadirán las debidas variables de entorno, las cuales se encuentran en el archivo **"example.env"**, estas **deben ser reemplazadas** para el funcionamiento del proyecto.
 
 ### Iniciar la app.
 
