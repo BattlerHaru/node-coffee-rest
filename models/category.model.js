@@ -4,6 +4,7 @@ const categorySchema = Schema({
   name: {
     type: String,
     required: [true, "La categoría es obligatoria."],
+    unique: true,
   },
   status: {
     type: Boolean,
@@ -16,5 +17,10 @@ const categorySchema = Schema({
     required: true,
   },
 });
+
+categorySchema.methods.toJSON = function () {
+  const {__v, status, ...data} = this.toObject();
+  return data;
+};
 
 module.exports = model("categorie", categorySchema);

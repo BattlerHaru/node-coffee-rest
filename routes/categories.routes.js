@@ -1,24 +1,41 @@
 const {Router} = require("express");
 const {check} = require("express-validator");
 
-const {fieldsValidate} = require("../middlewares/fields.validate");
+const {
+  createCategory,
+  getAllCategories,
+  getCategoryById,
+} = require("../controllers/categories.controller");
+const {isCategoryIdValid} = require("../helpers/db.validators");
+
+const {fieldsValidate, jwtValidate, isRoleValid} = require("../middlewares");
 
 const router = Router();
 
 // get all categories - public
-router.get("/", (req, res) => {
-  res.json("get all categories");
-});
+router.get("/", getAllCategories);
 
 // get category by id - public
-router.get("/:id", (req, res) => {
-  res.json("get category by id");
-});
+router.get(
+  "/:id",
+  [
+    check("id", "No es un ID de Mongo valido").isMongoId(),
+    check("id").custom(isCategoryIdValid),
+    fieldsValidate,
+  ],
+  getCategoryById
+);
 
 // create category - private with token
-router.post("/", (req, res) => {
-  res.json("post - category created");
-});
+router.post(
+  "/",
+  [
+    jwtValidate,
+    check("name", "El nombre es obligatorio.").not().isEmpty(),
+    fieldsValidate,
+  ],
+  createCategory
+);
 
 // edit category - private with token
 router.put("/:id", (req, res) => {
