@@ -1,41 +1,42 @@
-const { response, request } = require("express");
+const {response, request} = require("express");
 
 const isAdminRole = (req = request, res = response, next) => {
-    if (!req.user) {
-        return res.status(500).json({
-            msg: "Se quiere verificar el rol sin validar el token primero.",
-        });
-    }
-
-    const { role, name } = req.user;
-
-    if (role !== "ADMIN_ROLE") {}
-    return res.status(401).json({
-        msg: `El usuario: ${name}, no tiene permisos de administrador.`,
+  if (!req.user) {
+    return res.status(500).json({
+      msg: "Se quiere verificar el rol sin validar el token primero.",
     });
+  }
 
-    next();
+  const {role, name} = req.user;
+
+  if (role !== "ADMIN_ROLE") {
+    return res.status(401).json({
+      msg: `El usuario: ${name}, no tiene permisos de administrador.`,
+    });
+  }
+
+  next();
 };
 
 const isRoleValid = (...roles) => {
-    return (req = request, res = response, next) => {
-        if (!req.user) {
-            return res.status(500).json({
-                msg: "Se quiere verificar el rol sin validar el token primero.",
-            });
-        }
+  return (req = request, res = response, next) => {
+    if (!req.user) {
+      return res.status(500).json({
+        msg: "Se quiere verificar el rol sin validar el token primero.",
+      });
+    }
 
-        if (!roles.includes(req.user.role)) {
-            return res.status(401).json({
-                msg: `El usuario: ${name}, no tiene los permisos necesarios.`,
-            });
-        }
+    if (!roles.includes(req.user.role)) {
+      return res.status(401).json({
+        msg: `El usuario: ${name}, no tiene los permisos necesarios.`,
+      });
+    }
 
-        next();
-    };
+    next();
+  };
 };
 
 module.exports = {
-    isAdminRole,
-    isRoleValid,
+  isAdminRole,
+  isRoleValid,
 };

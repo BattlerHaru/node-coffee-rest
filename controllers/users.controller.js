@@ -1,80 +1,82 @@
-const { response, request } = require("express");
+const {response, request} = require("express");
+
+const {hashPass} = require("../helpers/db.validators");
 
 const UserModel = require("../models/user.model");
-const { hashPass } = require("../helpers/db.validators");
 
-const usersGet = async(req = request, res = response) => {
-    const query = { status: true };
+const getUsers = async (req = request, res = response) => {
+  const query = {status: true};
 
-    const { limit = 5, start = 0 } = req.query;
+  const {limit = 5, start = 0} = req.query;
 
-    const [total, users] = await Promise.all([
-        UserModel.countDocuments(query),
-        UserModel.find(query).skip(Number(start)).limit(Number(limit)),
-    ]);
+  const [total, users] = await Promise.all([
+    UserModel.countDocuments(query),
+    UserModel.find(query).skip(Number(start)).limit(Number(limit)),
+  ]);
 
-    res.json({
-        msg: "Lista de usuarios.",
-        total: `Total de usuarios: ${total}.`,
-        users,
-    });
+  res.status(200).json({
+    msg: "Lista de usuarios.",
+    total: `Total de usuarios: ${total}.`,
+    users,
+  });
 };
 
-const usersPost = async(req = request, res = response) => {
-    const { name, email, password, role, status } = req.body;
-    const user = new UserModel({ name, email, password, role, status });
+const createUser = async (req = request, res = response) => {
+  const {email, name, password, role, status} = req.body;
 
-    user.email = email.toLowerCase();
-    user.password = hashPass(password);
+  const user = new UserModel({name, email, password, role, status});
 
-    await user.save();
+  user.email = email.toLowerCase();
+  user.password = hashPass(password);
 
-    res.json({
-        msg: `Usuario: ${name}, registrado con éxito.`,
-        user,
-    });
+  await user.save();
+
+  res.status(201).json({
+    msg: `Usuario: ${name}, registrado con éxito.`,
+    user,
+  });
 };
 
-const usersPut = async(req = request, res = response) => {
-    const { id } = req.params;
-    const { _id, password, google, email, ...userData } = req.body;
+const editUser = async (req = request, res = response) => {
+  const {id} = req.params;
+  const {_id, password, google, email, ...userData} = req.body;
 
-    if (password) {
-        userData.password = hashPass(password);
-    }
+  if (password) {
+    userData.password = hashPass(password);
+  }
 
-    const user = await UserModel.findByIdAndUpdate(id, userData);
+  const user = await UserModel.findByIdAndUpdate(id, userData);
 
-    res.json({
-        msg: "Usuario actualizado con éxito.",
-        user,
-    });
+  res.status(200).json({
+    msg: "Usuario actualizado con éxito.",
+    user,
+  });
 };
 
-const usersDelete = async(req = request, res = response) => {
-    const { id } = req.params;
+const deleteUser = async (req = request, res = response) => {
+  const {id} = req.params;
 
-    // Delete
-    // const user = await UserModel.findByIdAndDelete(id);
+  // Delete is not recommend
+  // const user = await UserModel.findByIdAndDelete(id);
 
-    // Update status
-    const user = await UserModel.findByIdAndUpdate(id, { status: false });
+  // Update status
+  const user = await UserModel.findByIdAndUpdate(id, {status: false});
 
-    res.json({
-        msg: `Usuario: ${user.name}, dado de baja con éxito.`,
-    });
+  res.status(200).json({
+    msg: `Usuario: ${user.name}, dado de baja con éxito.`,
+  });
 };
 
 const usersPatch = (req = request, res = response) => {
-    res.json({
-        msg: "example patch API - users controller patch.",
-    });
+  res.json({
+    msg: "example patch API - users controller patch.",
+  });
 };
 
 module.exports = {
-    usersGet,
-    usersPost,
-    usersPut,
-    usersDelete,
-    usersPatch,
+  createUser,
+  deleteUser,
+  editUser,
+  getUsers,
+  usersPatch,
 };

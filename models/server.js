@@ -7,6 +7,8 @@ class Server {
   constructor() {
     // express
     this.app = express();
+
+    // Port
     this.port = process.env.PORT;
 
     // Paths
@@ -26,6 +28,7 @@ class Server {
     this.routes();
   }
 
+  // DB Connection
   async connectDB() {
     await dbConnection();
   }

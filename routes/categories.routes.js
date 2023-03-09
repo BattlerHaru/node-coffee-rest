@@ -1,14 +1,15 @@
 const {Router} = require("express");
 const {check} = require("express-validator");
 
+const {fieldsValidate, isRoleValid, jwtValidate} = require("../middlewares");
+
+const {isCategoryIdValid} = require("../helpers/db.validators");
+
 const {
   createCategory,
   getAllCategories,
   getCategoryById,
 } = require("../controllers/categories.controller");
-const {isCategoryIdValid} = require("../helpers/db.validators");
-
-const {fieldsValidate, jwtValidate, isRoleValid} = require("../middlewares");
 
 const router = Router();
 

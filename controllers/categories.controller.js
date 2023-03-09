@@ -15,7 +15,7 @@ const getAllCategories = async (req = request, res = response) => {
       .limit(Number(limit)),
   ]);
 
-  res.status(201).json({
+  res.status(200).json({
     msg: "Lista de categorías.",
     total: `Total de categorías: ${total}.`,
     categories,
@@ -30,7 +30,7 @@ const getCategoryById = async (req = request, res = response) => {
     "name"
   );
 
-  res.status(201).json({
+  res.status(200).json({
     msg: "Categoría encontrada",
     categoryData,
   });
@@ -42,7 +42,7 @@ const createCategory = async (req = request, res = response) => {
   const categoryDB = await CategoryModel.findOne({newName});
 
   if (categoryDB) {
-    return res.status(400).json({
+    return res.status(404).json({
       msg: `La categoría: ${newName}, ya existe`,
     });
   }

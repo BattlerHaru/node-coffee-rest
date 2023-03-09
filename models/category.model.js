@@ -23,4 +23,5 @@ categorySchema.methods.toJSON = function () {
   return data;
 };
 
+// "categorie" is for "categories" but for mongo adds "s" to last letter
 module.exports = model("categorie", categorySchema);

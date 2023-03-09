@@ -1,9 +1,6 @@
 const bcryptjs = require("bcryptjs");
 
-// const RoleModel = require("../models/role.model");
-// const UserModel = require("../models/user.model");
-
-const {RoleModel, UserModel, CategoryModel} = require("../models/index.models");
+const {CategoryModel, RoleModel, UserModel} = require("../models/index.models");
 
 const isRoleExists = async (role = "") => {
   const roleExists = await RoleModel.findOne({role});
@@ -13,22 +10,23 @@ const isRoleExists = async (role = "") => {
 };
 
 const isEmailExists = async (email = "") => {
-  const userEmail = await UserModel.findOne({email});
-  if (userEmail) {
-    throw new Error(`El Correo electrónico: ${email}, ya está registrado.`);
+  const emailExists = await UserModel.findOne({email});
+  if (emailExists) {
+    throw new Error(
+      `El Correo electrónico: ${email}, ya se encuentra registrado.`
+    );
   }
-  console.log(email, userEmail);
 };
 
 const isUserIdValid = async (id = "") => {
   const userId = await UserModel.findById(id);
   if (!userId) {
-    throw new Error(`El ID: ${id}, no existe.`);
+    throw new Error(`El ID: ${id} de ese usuario, no existe.`);
   }
 };
 
 const hashPass = (password = "") => {
-  const salt = bcryptjs.genSaltSync(); //10
+  const salt = bcryptjs.genSaltSync(); //10 default
   const hash = bcryptjs.hashSync(password, salt);
 
   return hash;
@@ -37,14 +35,14 @@ const hashPass = (password = "") => {
 const isCategoryIdValid = async (id = "") => {
   const categoryId = await CategoryModel.findById(id);
   if (!categoryId) {
-    throw new Error(`El ID: ${id}, no existe.`);
+    throw new Error(`El ID: ${id} de esa categoría, no existe.`);
   }
 };
 
 module.exports = {
-  isRoleExists,
-  isEmailExists,
-  isUserIdValid,
   hashPass,
   isCategoryIdValid,
+  isEmailExists,
+  isRoleExists,
+  isUserIdValid,
 };
