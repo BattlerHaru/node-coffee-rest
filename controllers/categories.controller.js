@@ -87,8 +87,58 @@ const createCategory = async (req = request, res = response) => {
   }
 };
 
+const editCategory = async (req = request, res = response) => {
+  const {id} = req.params;
+  const {status, user, ...data} = req.body;
+
+  data.name = data.name.toUpperCase();
+  data.user = req.user._id;
+
+  try {
+    const category = await CategoryModel.findByIdAndUpdate(id, data, {
+      new: true,
+    });
+
+    return res.status(200).json({
+      msg: "Categoría actualizada con éxito.",
+      category,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      msg: "Ha ocurrido un error, hable con el administrador.",
+      error: error,
+    });
+  }
+};
+
+const deleteCategory = async (req = request, res = response) => {
+  const {id} = req.params;
+
+  try {
+    const category = await CategoryModel.findByIdAndUpdate(
+      id,
+      {status: false},
+      {new: true}
+    );
+
+    return res.status(200).json({
+      msg: "Categoría dada de baja con éxito.",
+      category,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      msg: "Ha ocurrido un error, hable con el administrador.",
+      error: error,
+    });
+  }
+};
+
 module.exports = {
   createCategory,
+  deleteCategory,
+  editCategory,
   getAllCategories,
   getCategoryById,
 };
