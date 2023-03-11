@@ -1,6 +1,11 @@
 const bcryptjs = require("bcryptjs");
 
-const {CategoryModel, RoleModel, UserModel} = require("../models/index.models");
+const {
+  CategoryModel,
+  RoleModel,
+  UserModel,
+  ProductModel,
+} = require("../models/index.models");
 
 const isRoleExists = async (role = "") => {
   const roleExists = await RoleModel.findOne({role});
@@ -39,10 +44,18 @@ const isCategoryIdValid = async (id = "") => {
   }
 };
 
+const isProductIdValid = async (id = "") => {
+  const productId = await ProductModel.findById(id);
+  if (!productId) {
+    throw new Error(`El ID: ${id} de ese producto, no existe.`);
+  }
+};
+
 module.exports = {
   hashPass,
   isCategoryIdValid,
   isEmailExists,
+  isProductIdValid,
   isRoleExists,
   isUserIdValid,
 };

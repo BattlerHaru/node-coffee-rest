@@ -70,7 +70,6 @@ const createCategory = async (req = request, res = response) => {
     };
 
     const category = new CategoryModel(data);
-    console.log("Paso 4");
 
     await category.save();
 

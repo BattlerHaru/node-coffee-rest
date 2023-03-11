@@ -53,6 +53,7 @@ router.put(
     check("name", "El nombre es obligatorio.").not().isEmpty(),
     check("id", "No es un ID de Mongo valido").isMongoId(),
     check("id").custom(isCategoryIdValid),
+    isRoleValid("ADMIN_ROLE", "SALES_ROLE"),
     fieldsValidate,
   ],
   editCategory
