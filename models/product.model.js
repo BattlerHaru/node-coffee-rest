@@ -26,6 +26,9 @@ const productSchema = Schema({
     ref: "user",
     required: true,
   },
+  img: {
+    type: String,
+  },
   category: {
     type: Schema.Types.ObjectId,
     // "categorie" is for "categories" but for mongo adds "s" to last letter

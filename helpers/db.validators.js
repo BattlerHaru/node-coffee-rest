@@ -51,6 +51,17 @@ const isProductIdValid = async (id = "") => {
   }
 };
 
+const isCollectionValid = async (collection = "", collections = []) => {
+  const included = collections.includes(collection);
+  if (!included) {
+    throw new Error(
+      `La colección: ${collection} no es valida. - ${collections}`
+    );
+  }
+
+  return true;
+};
+
 module.exports = {
   hashPass,
   isCategoryIdValid,
@@ -58,4 +69,5 @@ module.exports = {
   isProductIdValid,
   isRoleExists,
   isUserIdValid,
+  isCollectionValid,
 };
