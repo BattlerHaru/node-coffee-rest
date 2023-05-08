@@ -6,3 +6,9 @@
 
 # vscode spells
 .vscode/
+
+# Ignore files inside the "uploads" folder
+/uploads/*
+
+# Allow the "uploads" folder
+!/uploads/

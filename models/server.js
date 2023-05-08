@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const fileUpload = require("express-fileupload");
 
 const {dbConnection} = require("../database/config");
 
@@ -45,6 +46,15 @@ class Server {
 
     // public directory (example)
     this.app.use(express.static("public"));
+
+    //Fileupload - Load files
+    this.app.use(
+      fileUpload({
+        useTempFiles: true,
+        tempFileDir: "/tmp/",
+        createParentPath: true,
+      })
+    );
   }
 
   routes() {
@@ -58,7 +68,7 @@ class Server {
 
   listen() {
     this.app.listen(this.port, () => {
-      console.log(`listening at http://localhost:${this.port}.`);
+      console.log(`listening at http://localhost:${this.port}`);
     });
   }
 }

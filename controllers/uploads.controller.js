@@ -1,54 +1,30 @@
 const {response, request} = require("express");
-const path = require("path");
+const {uploadFile} = require("../helpers");
+
 const loadFile = async (req = request, res = response) => {
   try {
     if (!req.files || Object.keys(req.files).length === 0) {
-      res.status(400).json({
-        msg: `No hay archivos que subir.`,
-        error: error,
-      });
-
-      return;
-    }
-
-    if (!req.files.fileU) {
-      res.status(400).json({
-        msg: `No hay archivos que subir.`,
-        error: error,
-      });
-
-      return;
-    }
-
-    const {fileU} = req.files;
-
-    const alias = fileU.name.split(".");
-    const fileExt = alias[alias.length - 1];
-
-    const validExt = ["png", "jpg", "jpeg", "gif"];
-    if (!validExt.includes(fileExt)) {
       return res.status(400).json({
-        msg: `La extension: ${fileExt} no es permitida.
-        Por favor utilice archivos de formato: ${validExt}`,
-        error: error,
+        msg: `No hay archivos que subir 1.`,
+      });
+    }
+    if (!req.files.fileU) {
+      return res.status(400).json({
+        msg: `No hay archivos que subir 2.`,
       });
     }
 
-    // const uploadPath = path.join(__dirname, "../uploads/", fileU.name);
+    const path = await uploadFile(req.files, undefined, "imgs");
 
-    // fileU.mv(uploadPath, function (err) {
-    //   if (err) {
-    //     return res.status(500).json({
-    //       msg: `Ha ocurrido un error al subir el archivo, contacte con el administrador.`,
-    //       error: error,
-    //     });
-    //   }
-
-    //   res.status(200).json({
-    //     msg: "Archivo subido a: " + uploadPath,
-    //   });
-    // });
-  } catch (error) {}
+    res.json({
+      name: path,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      msg: `Ha ocurrido un error al subir el archivo, inténtelo mas tarde o contacte con el administrador`,
+      error: error,
+    });
+  }
 };
 
 module.exports = {
