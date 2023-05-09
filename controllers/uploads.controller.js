@@ -2,6 +2,9 @@ const {response, request} = require("express");
 const path = require("path");
 const fs = require("fs");
 
+const cloudinary = require("cloudinary").v2;
+cloudinary.config(process.env.CLOUDINARY_URL);
+
 const {uploadFile} = require("../helpers");
 
 const {ProductModel, UserModel} = require("../models/index.models");
@@ -76,7 +79,103 @@ const updateImage = async (req = request, res = response) => {
   });
 };
 
+const showImages = async (req = request, res = response) => {
+  const {id, collection} = req.params;
+
+  let model;
+
+  switch (collection) {
+    case "users":
+      model = await UserModel.findById(id);
+      if (!model) {
+        return res.status(400).json({
+          msg: `No existe un usuario con el id: ${id}.`,
+        });
+      }
+      break;
+
+    case "products":
+      model = await ProductModel.findById(id);
+      if (!model) {
+        return res.status(400).json({
+          msg: `No existe un producto con el id: ${id}.`,
+        });
+      }
+      break;
+
+    default:
+      return res.status(500).json({
+        msg: `Colección: ${collection}, no definida`,
+      });
+  }
+
+  if (model.img) {
+    const pathImage = path.join(__dirname, "../uploads", collection, model.img);
+
+    if (fs.existsSync(pathImage)) {
+      return res.sendFile(pathImage);
+    }
+  }
+
+  const pathNoImageFound = path.join(__dirname, "../assets/no-image.jpg");
+
+  return res.sendFile(pathNoImageFound);
+};
+
+const updateImageCloudinary = async (req = request, res = response) => {
+  const {id, collection} = req.params;
+
+  let model;
+
+  switch (collection) {
+    case "users":
+      model = await UserModel.findById(id);
+      if (!model) {
+        return res.status(400).json({
+          msg: `No existe un usuario con el id: ${id}.`,
+        });
+      }
+      break;
+
+    case "products":
+      model = await ProductModel.findById(id);
+      if (!model) {
+        return res.status(400).json({
+          msg: `No existe un producto con el id: ${id}.`,
+        });
+      }
+      break;
+
+    default:
+      return res.status(500).json({
+        msg: `Colección: ${collection}, no definida`,
+      });
+  }
+
+  if (model.img) {
+    const nameArr = model.img.split("/");
+    const imageModel = nameArr[nameArr.length - 1];
+    const [public_id] = imageModel.split(".");
+
+    cloudinary.uploader.destroy(public_id);
+  }
+
+  const {tempFilePath} = req.files.fileU;
+
+  const {secure_url} = await cloudinary.uploader.upload(tempFilePath);
+
+  model.img = secure_url;
+  await model.save();
+
+  return res.status(200).json({
+    msg: `${id} actualizado`,
+    img: `${secure_url}`,
+  });
+};
+
 module.exports = {
   loadFile,
   updateImage,
+  showImages,
+  updateImageCloudinary,
 };
