@@ -59,7 +59,7 @@ const googleSignIn = async (req = request, res = response) => {
         google: true,
         img: picture,
         name,
-        password: "",
+        password: "google",
       };
       user = new UserModel(data);
       await user.save();
