@@ -1,5 +1,11 @@
 const baseURL = "http://localhost:8080/api/auth";
 
+const token = localStorage.getItem("token") || "";
+
+if (token && token != "") {
+  window.location = "chat.html";
+}
+
 // login Manual
 const myForm = document.querySelector("form");
 myForm.addEventListener("submit", (ev) => {
