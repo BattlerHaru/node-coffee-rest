@@ -17,6 +17,10 @@ const socketController = async (socket = new Socket(), io) => {
   io.emit("active-users", chatMessages.usersArr);
   io.emit("get-message", chatMessages.last10);
 
+  // on connect to special stage
+  // global, socket.id, user.id
+  socket.join(user.id);
+
   // on disconnect
   socket.on("disconnect", () => {
     chatMessages.disconnectUser(user.id);
@@ -25,8 +29,18 @@ const socketController = async (socket = new Socket(), io) => {
 
   // on send message
   socket.on("send-message", ({uid, message}) => {
-    chatMessages.sendMessage(user.id, user.name, message);
-    io.emit("get-message", chatMessages.last10);
+    if (uid) {
+      //Direct Message
+      const payload = {
+        from: user.name,
+        message,
+      };
+      socket.to(uid).emit("direct-message", payload);
+    } else {
+      // Global Message
+      chatMessages.sendMessage(user.id, user.name, message);
+      io.emit("get-message", chatMessages.last10);
+    }
   });
 };
 

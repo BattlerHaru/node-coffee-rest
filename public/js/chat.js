@@ -52,8 +52,8 @@ const socketConnect = async () => {
 
   socket.on("active-users", drawUsers);
 
-  socket.on("direct-message", () => {
-    console.log("Sockets offline");
+  socket.on("direct-message", (payload) => {
+    console.log("Privado:", payload);
   });
 };
 
