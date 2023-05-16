@@ -48,9 +48,8 @@ const socketConnect = async () => {
   socket.on("disconnect", () => {
     console.log("Sockets offline");
   });
-  socket.on("get-message", () => {
-    console.log("Sockets offline");
-  });
+  socket.on("get-message", drawMessages);
+
   socket.on("active-users", drawUsers);
 
   socket.on("direct-message", () => {
@@ -71,6 +70,40 @@ const drawUsers = (users = []) => {
   });
   ulUsers.innerHTML = usersHtml;
 };
+
+const drawMessages = (messages = []) => {
+  let msgsHtml = "";
+  messages.forEach(({name, message}) => {
+    msgsHtml += `
+    <li>
+      <p>
+        <span class="fs-6 text-primary">${name}: </span>
+        <span>${message}</span>
+      </p>
+    </li>`;
+  });
+  ulMsgs.innerHTML = msgsHtml;
+};
+
+txtMsg.addEventListener("keyup", ({keyCode}) => {
+  if (keyCode !== 13) {
+    return;
+  }
+
+  const message = txtMsg.value;
+  if (message.length === 0) {
+    return;
+  }
+
+  const uid = txtUid.value;
+  const payload = {
+    message,
+    uid,
+  };
+
+  socket.emit("send-message", payload);
+  txtMsg.value = "";
+});
 
 const main = async () => {
   await jwtValidate();
